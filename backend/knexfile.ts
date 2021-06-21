@@ -1,11 +1,15 @@
+require('dotenv').config();
+
 module.exports = {
     development: {
-        client: 'postgresql',
-        connection: process.env.DATABASE_URL || { user: 'misterjoe',password:'1234', database: 'db_todo_note_together' },
+        client: 'mysql',
+        connection: process.env.DATABASE_URL || {host : '127.0.0.1', user: process.env.NAME,password: process.env.PASSWORD, database: process.env.DBNAME },
         migrations: {
+            extension: "ts",
             directory: path.join(__dirname, 'db', 'migrations')
         },
         seeds: {
+            extension: "ts",
             directory: path.join(__dirname, 'db', 'seeds')
         }
     }
@@ -25,5 +29,4 @@ module.exports = {
     //       directory: (__dirname, 'db', 'seeds', 'production')
     //     },
     // },
-
 }
