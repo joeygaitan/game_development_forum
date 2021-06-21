@@ -5,9 +5,24 @@ const path = require('path');
 const { typeDefs, resolvers } = require('./schemas');
 const { authMiddleware } = require('./utils/auth');
 const db = require('./config/connection');
+const {graphqlHTTP } = require('express-graphql');
 
 const PORT = process.env.PORT || 5000;
 const app = express();
+ 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+ 
+app.use('/graphql', graphqlHTTP({
+  context,
+  graphiql: {
+    defaultQuery: config.defaultQuery,
+  } as undefined,
+  schema,
+}));
+
+
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,

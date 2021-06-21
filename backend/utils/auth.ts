@@ -1,18 +1,19 @@
+require('dotenv').config();
+
 const jwt = require('jsonwebtoken');
 
 import { Request, Response } from 'express';
 
-// const secret = 'secret';
-// const expiration = '2h';
+const expiration: string  = '2h';
 
-interface authMiddleWareReturnValue
+interface PayloadInterface
 {
-    req:!Request;
-    req:any;
+    username: string;
+    id: number;
 }
 
-function authMiddleware (req: any): authMiddleWareReturnValue
-
+function checkToken (req: any)
+{
     let token: any= req.headers.authorization;
 
     if (req.headers.authorization) {
@@ -24,7 +25,7 @@ function authMiddleware (req: any): authMiddleWareReturnValue
     }
 
     try {
-        const { data } = jwt.verify(token, secret, { maxAge: expiration });
+        const { data } = jwt.verify(token, process.env.SECRET, { maxAge: expiration });
         req.user = data;
       }
       catch {
@@ -34,6 +35,13 @@ function authMiddleware (req: any): authMiddleWareReturnValue
       return req;
 }
 
+function getToken ({ username, id }: PayloadInterface) {
+    const payload: PayloadInterface = { username, id};
+
+    return jwt.sign({ data: payload }, process.env.SECRET, { expiresIn: expiration });
+}
+
 module.exports = {
-    authMiddleware,
+    checkToken,
+    getToken
 }
